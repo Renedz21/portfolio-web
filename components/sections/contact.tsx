@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "motion/react";
 import { Send } from "lucide-react";
+import { useContactForm } from "@/hooks/use-contact-form";
 
 export default function ContactMinimal() {
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    isValid,
+    focusedField,
+    handleFocus,
+    createBlurHandler,
+    nameValue,
+    emailValue,
+    messageValue,
+  } = useContactForm();
 
   return (
     <section className="min-h-screen flex flex-col justify-between px-6 md:px-12 lg:px-24 py-24 bg-foreground text-background relative overflow-hidden">
@@ -39,14 +49,14 @@ export default function ContactMinimal() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col justify-center"
         >
-          <form className="space-y-12">
+          <form className="space-y-12" onSubmit={handleSubmit}>
             <div className="relative">
               <label
                 htmlFor="name"
                 className={`absolute left-0 transition-all duration-300 ${
                   focusedField === "name"
                     ? "-top-6 text-xs text-accent"
-                    : "top-0 text-2xl text-white/40"
+                    : "-top-5 text-2xl text-white/40"
                 }`}
               >
                 ¿Cómo te llamas?
@@ -54,8 +64,13 @@ export default function ContactMinimal() {
               <input
                 type="text"
                 id="name"
-                onFocus={() => setFocusedField("name")}
-                onBlur={(e) => !e.target.value && setFocusedField(null)}
+                {...register("name")}
+                onFocus={() => handleFocus("name")}
+                onBlur={createBlurHandler(
+                  "name",
+                  nameValue,
+                  register("name").onBlur
+                )}
                 className="w-full bg-transparent border-b border-white/20 py-4 text-2xl text-white focus:outline-none focus:border-accent transition-colors"
               />
             </div>
@@ -66,7 +81,7 @@ export default function ContactMinimal() {
                 className={`absolute left-0 transition-all duration-300 ${
                   focusedField === "email"
                     ? "-top-6 text-xs text-accent"
-                    : "top-0 text-2xl text-white/40"
+                    : "-top-5 text-2xl text-white/40"
                 }`}
               >
                 ¿Cuál es tu email?
@@ -74,8 +89,13 @@ export default function ContactMinimal() {
               <input
                 type="email"
                 id="email"
-                onFocus={() => setFocusedField("email")}
-                onBlur={(e) => !e.target.value && setFocusedField(null)}
+                {...register("email")}
+                onFocus={() => handleFocus("email")}
+                onBlur={createBlurHandler(
+                  "email",
+                  emailValue,
+                  register("email").onBlur
+                )}
                 className="w-full bg-transparent border-b border-white/20 py-4 text-2xl text-white focus:outline-none focus:border-accent transition-colors"
               />
             </div>
@@ -86,7 +106,7 @@ export default function ContactMinimal() {
                 className={`absolute left-0 transition-all duration-300 ${
                   focusedField === "message"
                     ? "-top-6 text-xs text-accent"
-                    : "top-0 text-2xl text-white/40"
+                    : "-top-5 text-2xl text-white/40"
                 }`}
               >
                 Cuéntame sobre tu proyecto
@@ -94,22 +114,32 @@ export default function ContactMinimal() {
               <textarea
                 id="message"
                 rows={3}
-                onFocus={() => setFocusedField("message")}
-                onBlur={(e) => !e.target.value && setFocusedField(null)}
+                {...register("message")}
+                onFocus={() => handleFocus("message")}
+                onBlur={createBlurHandler(
+                  "message",
+                  messageValue,
+                  register("message").onBlur
+                )}
                 className="w-full bg-transparent border-b border-white/20 py-4 text-2xl text-white focus:outline-none focus:border-accent transition-colors resize-none"
               />
             </div>
 
-            <button
-              type="submit"
-              className="group flex items-center gap-4 text-xl font-bold tracking-widest uppercase hover:text-accent transition-colors"
-            >
-              Enviar Mensaje
-              <div className="relative overflow-hidden w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-accent transition-colors">
-                <Send className="w-5 h-5 relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </div>
-            </button>
+            <div className="space-y-4">
+              <button
+                type="submit"
+                disabled={!isValid}
+                className="group flex items-center gap-4 text-xl font-bold tracking-widest uppercase hover:text-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:text-inherit cursor-pointer"
+              >
+                Enviar Mensaje
+                <div className="relative overflow-hidden w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-accent transition-colors">
+                  <Send className="w-5 h-5 relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </div>
+              </button>
+              <p className="text-white/40 text-sm">
+                Esto abrirá tu cliente de correo predeterminado
+              </p>
+            </div>
           </form>
         </motion.div>
       </div>
@@ -151,7 +181,7 @@ export default function ContactMinimal() {
             >
               <path
                 d="M218.123 218.127h-37.931v-59.403c0-14.165-.253-32.4-19.728-32.4-19.756 0-22.779 15.434-22.779 31.369v60.43h-37.93V95.967h36.413v16.694h.51a39.907 39.907 0 0 1 35.928-19.733c38.445 0 45.533 25.288 45.533 58.186l-.016 67.013ZM56.955 79.27c-12.157.002-22.014-9.852-22.016-22.009-.002-12.157 9.851-22.014 22.008-22.016 12.157-.003 22.014 9.851 22.016 22.008A22.013 22.013 0 0 1 56.955 79.27m18.966 138.858H37.95V95.967h37.97v122.16ZM237.033.018H18.89C8.58-.098.125 8.161-.001 18.471v219.053c.122 10.315 8.576 18.582 18.89 18.474h218.144c10.336.128 18.823-8.139 18.966-18.474V18.454c-.147-10.33-8.635-18.588-18.966-18.453"
-                fill="#0A66C2"
+                fill="#ffff"
               />
             </svg>
             <span>Linkedin</span>
