@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { m, useScroll, useTransform } from "motion/react";
 import { projects } from "@/data/projects";
 import ProjectCard from "@/components/shared/project-card";
 
@@ -19,7 +19,7 @@ export default function ProjectGallery() {
       className="relative h-[300vh] bg-foreground text-background"
     >
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <motion.div style={{ x }} className="flex gap-12 px-12 md:px-24">
+        <m.div style={{ x }} className="flex gap-12 px-12 md:px-24">
           <div className="shrink-0 w-[80vw] md:w-[40vw] flex flex-col justify-center">
             <h2 className="text-5xl md:text-6xl lg:text-8xl font-bold tracking-tighter mb-6">
               MIS <br />
@@ -39,7 +39,7 @@ export default function ProjectGallery() {
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

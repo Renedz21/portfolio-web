@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { m } from "motion/react";
 
 export default function AboutMinimal() {
   return (
@@ -17,7 +17,7 @@ export default function AboutMinimal() {
           </div>
 
           <div className="md:col-span-8">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -57,7 +57,7 @@ export default function AboutMinimal() {
                   </ul>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
       </div>

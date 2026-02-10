@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["motion", "lucide-react"],
   },
+  compress: true,
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+  productionBrowserSourceMaps: false,
 };
 
 export default nextConfig;
