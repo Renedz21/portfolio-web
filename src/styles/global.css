@@ -444,7 +444,7 @@ h1 span:last-child {
   border-top: 0.75rem solid var(--background);
 }
 
-.project-link {
+.project-entry {
   display: grid;
   min-height: 100svh;
   grid-template-rows: auto auto auto 1fr;
@@ -453,6 +453,10 @@ h1 span:last-child {
   border: 1px solid transparent;
   background: var(--surface);
   transition: border-color 180ms ease;
+}
+
+.project-preview {
+  cursor: default;
 }
 
 .project-heading {
@@ -484,6 +488,29 @@ h2 {
   transition:
     color 160ms ease,
     transform 160ms ease;
+}
+
+.project-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--interactive-line);
+  border-radius: 999px;
+  color: var(--accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.project-status::before {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
 }
 
 .project-details {
@@ -600,7 +627,7 @@ a:focus-visible {
     font-size: clamp(4.25rem, 19vw, 8rem);
   }
 
-  .project-link {
+  .project-entry {
     min-height: auto;
   }
 

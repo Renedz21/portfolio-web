@@ -94,7 +94,7 @@ test("renders an accessible progressively enhanced theme selector", async () => 
   expect(html).toContain('class="theme-option theme-option-moon"');
 });
 
-test("renders four semantic project links with temporary visuals", async () => {
+test("renders published projects as safe external links", async () => {
   const html = await readOutput("dist/index.html");
   const expectedUrls = [
     "https://www.konti.dev/",
@@ -102,16 +102,44 @@ test("renders four semantic project links with temporary visuals", async () => {
     "https://inkyra.app/",
     "https://quipu-finance.app/",
   ];
+  const projectLinks =
+    html.match(/<a\b[^>]*class="project-entry project-link"[^>]*>/g) ?? [];
 
-  expect(html.match(/<article class="project-card"/g)).toHaveLength(4);
-  expect(html.match(/<h2\b/g)).toHaveLength(4);
+  expect(html.match(/<article class="project-card"/g)).toHaveLength(6);
+  expect(html.match(/<h2\b/g)).toHaveLength(6);
+  expect(projectLinks).toHaveLength(4);
   expect(html.match(/PROJECT VISUAL — COMING SOON/g)).toHaveLength(4);
+  expect(html.match(/class="project-arrow"/g)).toHaveLength(4);
 
   for (const url of expectedUrls) {
     expect(html).toContain('href="' + url + '"');
   }
 
-  expect(html).toContain('target="_blank"');
-  expect(html).toContain('rel="noopener noreferrer"');
-  expect(html).toContain("abre en una pestaña nueva");
+  for (const link of projectLinks) {
+    expect(link).toContain('target="_blank"');
+    expect(link).toContain('rel="noopener noreferrer"');
+    expect(link).toContain("abre en una pestaña nueva");
+  }
+});
+
+test("renders projects in development as non-interactive previews", async () => {
+  const html = await readOutput("dist/index.html");
+  const articles =
+    html.match(/<article class="project-card"[\s\S]*?<\/article>/g) ?? [];
+  const developmentArticles = articles.filter(
+    (article) => article.includes(">Aulara</h2>") || article.includes(">Naya</h2>"),
+  );
+
+  expect(developmentArticles).toHaveLength(2);
+  expect(html.match(/>EN DESARROLLO</g)).toHaveLength(2);
+  expect(html.match(/PROYECTO EN DESARROLLO/g)).toHaveLength(2);
+
+  for (const article of developmentArticles) {
+    expect(article).toContain('class="project-entry project-preview"');
+    expect(article).toContain('class="project-status"');
+    expect(article).not.toContain("<a ");
+    expect(article).not.toContain("href=");
+    expect(article).not.toContain("target=");
+    expect(article).not.toContain('class="project-arrow"');
+  }
 });
