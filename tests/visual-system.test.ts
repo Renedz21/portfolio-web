@@ -60,5 +60,20 @@ test("defines restrained interaction and circular reveal rules", async () => {
   expect(css).not.toContain("radial-gradient");
   expect(css).toContain("animation: none !important;");
   expect(css).toContain(":root[data-theme-transitioning] :where(");
+  expect(css).toContain("  .project-entry,");
+  expect(css).toContain(":root:not([data-theme-enhanced]) :where(");
   expect(css).toContain("transition-duration: 0ms;");
+});
+
+test("stacks the preview status above its heading on narrow screens", async () => {
+  const css = await Bun.file(stylesheetUrl).text();
+
+  expect(css).toContain("@media (max-width: 32rem)");
+  expect(css).toContain(
+    "  .project-preview .project-header {\n    gap: 1rem;\n    flex-direction: column-reverse;\n  }",
+  );
+  expect(css).toContain(
+    "  .project-preview .project-status {\n    align-self: flex-end;\n  }",
+  );
+  expect(css).not.toContain("  .project-link .project-header {");
 });

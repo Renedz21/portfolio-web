@@ -24,6 +24,7 @@ const canonical = new URL(Astro.url.pathname, site);
       (() => {
         const storageKey = "edzon-portfolio-theme";
         const root = document.documentElement;
+        root.dataset.themeEnhanced = "";
         const themeColor = document.querySelector('meta[name="theme-color"]');
         const reducedMotion = window.matchMedia(
           "(prefers-reduced-motion: reduce)",
@@ -95,7 +96,9 @@ const canonical = new URL(Astro.url.pathname, site);
               typeof document.startViewTransition !== "function"
             ) {
               updateTheme();
-              window.requestAnimationFrame(clearTransitionGuard);
+              window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(clearTransitionGuard);
+              });
               return;
             }
 

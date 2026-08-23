@@ -78,7 +78,15 @@ html {
   .theme-option,
   .primary-cta,
   .social-links a,
-  .project-link,
+  .project-entry,
+  .project-arrow
+),
+:root:not([data-theme-enhanced]) :where(
+  .theme-toggle-label,
+  .theme-option,
+  .primary-cta,
+  .social-links a,
+  .project-entry,
   .project-arrow
 ) {
   transition-duration: 0ms;
@@ -678,6 +686,15 @@ a:focus-visible {
     align-items: flex-end;
     flex-direction: column;
     gap: 0.75rem;
+  }
+
+  .project-preview .project-header {
+    gap: 1rem;
+    flex-direction: column-reverse;
+  }
+
+  .project-preview .project-status {
+    align-self: flex-end;
   }
 
   .project-heading {

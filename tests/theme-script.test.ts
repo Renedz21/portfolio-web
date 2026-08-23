@@ -172,6 +172,7 @@ test("initializes a stored light theme before syncing the checkbox", async () =>
 
   const scenario = runThemeScript(script, { storedTheme: "light" });
 
+  expect(scenario.root.dataset.themeEnhanced).toBe("");
   expect(scenario.root.dataset.theme).toBe("light");
   expect(scenario.themeColor.content).toBe("#f4f1eb");
   expect(scenario.input.checked).toBe(false);
@@ -290,6 +291,34 @@ test("applies changes instantly when transitions are reduced or unsupported", as
 
     scenario.flushAnimationFrames();
 
+    expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+    scenario.flushAnimationFrames();
+
     expect(scenario.root.dataset.themeTransitioning).toBeUndefined();
   }
+});
+
+test("keeps fallback cleanup revision-safe across two frame callbacks", async () => {
+  const script = await readThemeScript();
+  expect(script).not.toBe("");
+  const scenario = runThemeScript(script, { startViewTransition: false });
+  scenario.documentListeners.get("DOMContentLoaded")?.();
+
+  scenario.input.checked = true;
+  scenario.inputListeners.get("change")?.();
+  scenario.flushAnimationFrames();
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+  scenario.input.checked = false;
+  scenario.inputListeners.get("change")?.();
+  scenario.flushAnimationFrames();
+
+  expect(scenario.root.dataset.theme).toBe("dark");
+  expect(scenario.storedValues.get("edzon-portfolio-theme")).toBe("dark");
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+  scenario.flushAnimationFrames();
+
+  expect(scenario.root.dataset.themeTransitioning).toBeUndefined();
 });
