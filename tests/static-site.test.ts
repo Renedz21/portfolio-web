@@ -71,3 +71,25 @@ test("renders the complete personal identity and contact paths", async () => {
   }
   expect(html).toContain('href="#contenido">Saltar al contenido</a>');
 });
+
+test("renders four semantic project links with temporary visuals", async () => {
+  const html = await readOutput("dist/index.html");
+  const expectedUrls = [
+    "https://www.konti.dev/",
+    "https://que-como.vercel.app/",
+    "https://inkyra.app/",
+    "https://quipu-finance.app/",
+  ];
+
+  expect(html.match(/<article class="project-card"/g)).toHaveLength(4);
+  expect(html.match(/<h2\b/g)).toHaveLength(4);
+  expect(html.match(/PROJECT VISUAL — COMING SOON/g)).toHaveLength(4);
+
+  for (const url of expectedUrls) {
+    expect(html).toContain('href="' + url + '"');
+  }
+
+  expect(html).toContain('target="_blank"');
+  expect(html).toContain('rel="noopener noreferrer"');
+  expect(html).toContain("abre en una pestaña nueva");
+});

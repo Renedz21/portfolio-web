@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import type { Project } from "@/data/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const titleId = "project-" + project.id;
+const number = String(project.id).padStart(2, "0");
+---
+
+<article class="project-card" aria-labelledby={titleId}>
+  <a
+    class="project-link"
+    href={project.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={project.title + ": visitar proyecto (abre en una pestaña nueva)"}
+  >
+    <header class="project-header">
+      <div class="project-heading">
+        <span class="project-number">{number}</span>
+        <div>
+          <p class="project-category">{project.category}</p>
+          <h2 id={titleId}>{project.title}</h2>
+        </div>
+      </div>
+      <span class="project-arrow" aria-hidden="true">↗</span>
+    </header>
+
+    <div class="project-details">
+      <p class="project-description">{project.description}</p>
+      <p class="project-year">
+        <span>Año</span>
+        <strong>{project.year}</strong>
+      </p>
+    </div>
+
+    <ul class="project-stack" aria-label={"Tecnologías de " + project.title}>
+      {project.stack.map((technology) => <li>{technology}</li>)}
+    </ul>
+
+    <div class="project-visual">
+      {
+        project.image ? (
+          <Image
+            class="project-image"
+            src={project.image}
+            alt={"Vista previa de " + project.title}
+            loading="lazy"
+          />
+        ) : (
+          <span>PROJECT VISUAL — COMING SOON</span>
+        )
+      }
+    </div>
+  </a>
+</article>

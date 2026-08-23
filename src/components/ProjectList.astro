@@ -1,0 +1,8 @@
+---
+import ProjectCard from "@/components/ProjectCard.astro";
+import { projects } from "@/data/projects";
+---
+
+<section class="project-list" aria-label="Proyectos seleccionados">
+  {projects.map((project) => <ProjectCard project={project} />)}
+</section>
