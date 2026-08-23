@@ -17,6 +17,14 @@
 /.next/
 /out/
 
+# astro
+/.astro/
+/dist/
+
+# isolated local workspaces and planning artifacts
+/.worktrees/
+/docs/superpowers/
+
 # production
 /build
 
