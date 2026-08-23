@@ -29,10 +29,14 @@
   --toggle-track: #242428;
   --toggle-active: #101013;
   --toggle-shadow: rgb(0 0 0 / 24%);
+  --theme-x: 50%;
+  --theme-y: 50%;
+  --theme-radius: 0px;
   --content-pad: clamp(1.25rem, 3vw, 3rem);
 }
 
-:root:has(#theme-toggle:checked) {
+:root[data-theme="light"],
+:root:not([data-theme]):has(#theme-toggle:checked) {
   color-scheme: light;
   --background: #f4f1eb;
   --panel: #faf8f4;
@@ -57,6 +61,16 @@
 html {
   min-width: 20rem;
   background: var(--background);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  clip-path: circle(var(--theme-radius) at var(--theme-x) var(--theme-y));
 }
 
 body {
@@ -129,7 +143,7 @@ ul {
   justify-content: space-between;
   overflow-y: auto;
   padding: var(--content-pad);
-  border-right: 1px solid var(--line);
+  border-right: 1px dashed var(--line);
   background: var(--panel);
 }
 
@@ -218,6 +232,9 @@ ul {
   border-radius: 999px;
   background: var(--toggle-track);
   cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
 }
 
 .theme-option {
@@ -227,6 +244,10 @@ ul {
   place-items: center;
   border-radius: 999px;
   color: var(--muted);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease;
 }
 
 .theme-option svg {
@@ -235,7 +256,6 @@ ul {
 }
 
 .theme-option-sun svg {
-  stroke: currentColor;
   stroke-linecap: round;
   stroke-width: 1.6;
 }
@@ -267,8 +287,13 @@ ul {
 }
 
 .theme-toggle:focus-visible + .theme-toggle-label {
+  border-color: var(--accent);
   outline: 2px solid var(--accent);
   outline-offset: 4px;
+}
+
+.theme-toggle-label:hover {
+  border-color: var(--interactive-line);
 }
 
 .personal-copy {
@@ -366,6 +391,17 @@ h1 span:last-child {
   color: var(--background);
   font-size: 0.875rem;
   font-weight: 650;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.primary-cta:hover,
+.primary-cta:focus-visible {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
 }
 
 .social-links {
@@ -378,6 +414,14 @@ h1 span:last-child {
   gap: 0.35rem;
   color: var(--muted);
   font-size: 0.75rem;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.social-links a:hover,
+.social-links a:focus-visible {
+  color: var(--text);
 }
 
 .project-list {
@@ -397,6 +441,7 @@ h1 span:last-child {
   padding: var(--content-pad);
   border: 1px solid transparent;
   background: var(--surface);
+  transition: border-color 180ms ease;
 }
 
 .project-heading {
@@ -496,6 +541,10 @@ h2 {
 
 .project-link:hover {
   border-color: var(--interactive-line);
+}
+
+.project-link:focus-visible {
+  border-color: var(--accent);
 }
 
 a:focus-visible {
@@ -612,5 +661,10 @@ a:focus-visible {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }

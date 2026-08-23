@@ -27,7 +27,9 @@ test("defines the split, sticky, responsive, and reduced-motion rules", async ()
 test("defines the CSS-only light theme and segmented switch states", async () => {
   const css = await Bun.file(stylesheetUrl).text();
 
-  expect(css).toContain(":root:has(#theme-toggle:checked) {");
+  expect(css).toContain(
+    ':root[data-theme="light"],\n:root:not([data-theme]):has(#theme-toggle:checked) {',
+  );
   expect(css).toContain("color-scheme: light;");
   expect(css).toContain("--background: #f4f1eb;");
   expect(css).toContain("--panel: #faf8f4;");
@@ -40,4 +42,21 @@ test("defines the CSS-only light theme and segmented switch states", async () =>
   expect(css).toContain(
     ".theme-toggle:checked + .theme-toggle-label .theme-option-sun",
   );
+});
+
+test("defines restrained interaction and circular reveal rules", async () => {
+  const css = await Bun.file(stylesheetUrl).text();
+
+  expect(css).toContain("--theme-x: 50%;");
+  expect(css).toContain("--theme-y: 50%;");
+  expect(css).toContain("--theme-radius: 0px;");
+  expect(css).toContain("::view-transition-new(root)");
+  expect(css).toContain("clip-path: circle(");
+  expect(css).toContain("180ms ease");
+  expect(css).toContain("translate(0.125rem, -0.125rem)");
+  expect(css).not.toContain("transition: all");
+  expect(css).not.toMatch(/\b(?:scale|blur)\s*\(/);
+  expect(css).not.toContain("linear-gradient");
+  expect(css).not.toContain("radial-gradient");
+  expect(css).toContain("animation: none !important;");
 });

@@ -8,6 +8,7 @@ async function readOutput(relativePath: string): Promise<string> {
 
 test("builds a Spanish static document with complete metadata", async () => {
   const html = await readOutput("dist/index.html");
+  const scripts = html.match(/<script\b[^>]*>[\s\S]*?<\/script>/gi) ?? [];
 
   expect(html).toContain('<html lang="es">');
   expect(html).toContain("<title>Edzon Perez — Fullstack Engineer</title>");
@@ -18,7 +19,13 @@ test("builds a Spanish static document with complete metadata", async () => {
     'rel="canonical" href="https://edzon-dev.vercel.app/"',
   );
   expect(html).toContain('rel="sitemap" href="/sitemap-index.xml"');
-  expect(html).not.toMatch(/<script\b/i);
+  expect(scripts).toHaveLength(1);
+  expect(scripts[0]).toContain("data-theme-script");
+  expect(scripts[0]).not.toMatch(/\bsrc=/i);
+  expect(html).not.toContain("ClientRouter");
+  expect(html).not.toContain("client:");
+  expect(html).not.toContain("framer-motion");
+  expect(html).not.toContain("motion/react");
 });
 
 test("publishes crawler discovery files", async () => {
@@ -40,7 +47,7 @@ test("renders the complete personal identity and contact paths", async () => {
   expect(html.match(/<h1\b/g)).toHaveLength(1);
   expect(html).toContain("Edzon");
   expect(html).toContain("Perez");
-  expect(html).toContain("Fullstack Engineer · Lima, Perú");
+  expect(html).toContain("Ingeniero de Software · Lima, Perú");
   expect(html).toContain(
     "Desarrollo productos digitales que resuelven problemas reales con precisión técnica y simplicidad.",
   );
@@ -72,16 +79,19 @@ test("renders the complete personal identity and contact paths", async () => {
   expect(html).toContain('href="#contenido">Saltar al contenido</a>');
 });
 
-test("renders an accessible CSS-only theme selector", async () => {
+test("renders an accessible progressively enhanced theme selector", async () => {
   const html = await readOutput("dist/index.html");
+  const themeToggle =
+    html.match(/<input\b[^>]*\bid="theme-toggle"[^>]*>/i)?.[0] ?? "";
 
   expect(html).toContain(
     '<input type="checkbox" id="theme-toggle" role="switch" aria-label="Modo claro"',
   );
+  expect(themeToggle).not.toBe("");
+  expect(themeToggle).not.toMatch(/\schecked(?:\s|=|>)/i);
   expect(html).toContain('for="theme-toggle"');
   expect(html).toContain('class="theme-option theme-option-sun"');
   expect(html).toContain('class="theme-option theme-option-moon"');
-  expect(html).not.toMatch(/<script\b/i);
 });
 
 test("renders four semantic project links with temporary visuals", async () => {
