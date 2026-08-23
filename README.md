@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio de Edzon Perez
 
-## Getting Started
+Portfolio personal estático construido con Astro, TypeScript y CSS. El sitio prioriza rendimiento, accesibilidad y una experiencia visual _dark-first_ sin React, Next.js ni librerías de animación.
 
-First, run the development server:
+## Requisitos
+
+- [Bun](https://bun.sh/) 1.4 o superior
+
+## Desarrollo local
+
+Instala las dependencias y levanta el servidor de desarrollo:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Astro mostrará en la terminal la URL local del proyecto.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Comandos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun run dev       # Inicia Astro en modo desarrollo
+bun run build     # Comprueba tipos y genera el sitio estático
+bun run preview   # Previsualiza el resultado de producción
+bun run test      # Ejecuta las pruebas automatizadas
+bun run check     # Comprueba Astro y el formato/lint del proyecto
+bun run validate  # Ejecuta todas las verificaciones del proyecto
+```
 
-## Learn More
+Antes de entregar cambios, ejecuta:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run validate
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura principal
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/pages/`: páginas y rutas de Astro.
+- `src/components/`: componentes estáticos de la interfaz.
+- `src/data/`: contenido tipado de los proyectos.
+- `src/styles/`: sistema visual global y temas.
+- `public/`: recursos publicados sin transformación.
+- `tests/`: contratos de datos, salida estática y comportamiento del tema.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El resultado de producción se genera en `dist/` y puede desplegarse en cualquier servicio de alojamiento estático.
