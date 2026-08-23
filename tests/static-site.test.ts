@@ -72,6 +72,18 @@ test("renders the complete personal identity and contact paths", async () => {
   expect(html).toContain('href="#contenido">Saltar al contenido</a>');
 });
 
+test("renders an accessible CSS-only theme selector", async () => {
+  const html = await readOutput("dist/index.html");
+
+  expect(html).toContain(
+    '<input type="checkbox" id="theme-toggle" role="switch" aria-label="Modo claro"',
+  );
+  expect(html).toContain('for="theme-toggle"');
+  expect(html).toContain('class="theme-option theme-option-sun"');
+  expect(html).toContain('class="theme-option theme-option-moon"');
+  expect(html).not.toMatch(/<script\b/i);
+});
+
 test("renders four semantic project links with temporary visuals", async () => {
   const html = await readOutput("dist/index.html");
   const expectedUrls = [
