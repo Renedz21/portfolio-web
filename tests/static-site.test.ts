@@ -40,15 +40,34 @@ test("renders the complete personal identity and contact paths", async () => {
   expect(html.match(/<h1\b/g)).toHaveLength(1);
   expect(html).toContain("Edzon");
   expect(html).toContain("Perez");
-  expect(html).toContain("Fullstack Engineer");
+  expect(html).toContain("Fullstack Engineer · Lima, Perú");
   expect(html).toContain(
     "Desarrollo productos digitales que resuelven problemas reales con precisión técnica y simplicidad.",
   );
   expect(html).toContain("Disponible para nuevos proyectos");
-  expect(html).toContain('href="mailto:edzonperez.castillo@gmail.com"');
-  expect(html).toContain('href="https://github.com/Renedz21"');
   expect(html).toContain(
-    'href="https://www.linkedin.com/in/brad-edzon-perez-castillo-5342b1205/"',
+    "Soy Edzon, desarrollador fullstack. Construyo productos claros y agradables de usar, con experiencias fluidas que resuelven problemas sin complicar la vida.",
   );
+  for (const skill of [
+    "React / Next.js",
+    "TypeScript",
+    "Node.js / NestJS",
+    "PostgreSQL / Supabase",
+    "Tailwind CSS",
+  ]) {
+    expect(html).toContain(`<li>${skill}</li>`);
+  }
+  expect(html).toContain('href="mailto:edzonperez.castillo@gmail.com"');
+  for (const [label, url] of [
+    ["GitHub", "https://github.com/Renedz21"],
+    [
+      "LinkedIn",
+      "https://www.linkedin.com/in/brad-edzon-perez-castillo-5342b1205/",
+    ],
+  ]) {
+    expect(html).toContain(
+      `<a href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label} (abre en una pestaña nueva)">`,
+    );
+  }
   expect(html).toContain('href="#contenido">Saltar al contenido</a>');
 });
