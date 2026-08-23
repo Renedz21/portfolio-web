@@ -73,6 +73,17 @@ html {
   clip-path: circle(var(--theme-radius) at var(--theme-x) var(--theme-y));
 }
 
+:root[data-theme-transitioning] :where(
+  .theme-toggle-label,
+  .theme-option,
+  .primary-cta,
+  .social-links a,
+  .project-link,
+  .project-arrow
+) {
+  transition-duration: 0ms;
+}
+
 body {
   margin: 0;
   min-width: 20rem;

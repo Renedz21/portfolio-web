@@ -5,6 +5,12 @@ const outputUrl = new URL("../dist/index.html", import.meta.url);
 type Theme = "dark" | "light";
 type Listener = () => void;
 
+interface PendingTransition {
+  update: Listener;
+  resolveFinished: Listener;
+  resolveReady: Listener;
+}
+
 interface ScenarioOptions {
   reducedMotion?: boolean;
   startViewTransition?: boolean;
@@ -23,6 +29,8 @@ async function readThemeScript(): Promise<string> {
 function runThemeScript(script: string, options: ScenarioOptions = {}) {
   const documentListeners = new Map<string, Listener>();
   const inputListeners = new Map<string, Listener>();
+  const animationFrameCallbacks: Listener[] = [];
+  const pendingTransitions: PendingTransition[] = [];
   const storedValues = new Map<string, string>();
   const styleValues = new Map<string, string>();
   const animations: Array<{
@@ -80,7 +88,6 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
   }
 
   let transitionCalls = 0;
-  let transitionUpdate: Listener | undefined;
   const document = {
     documentElement: root,
     querySelector(selector: string) {
@@ -94,8 +101,20 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
         ? undefined
         : (update: Listener) => {
             transitionCalls += 1;
-            transitionUpdate = update;
-            return { ready: Promise.resolve() };
+            let resolveReady = () => {};
+            let resolveFinished = () => {};
+            const ready = new Promise<void>((resolve) => {
+              resolveReady = resolve;
+            });
+            const finished = new Promise<void>((resolve) => {
+              resolveFinished = resolve;
+            });
+            pendingTransitions.push({
+              update,
+              resolveFinished,
+              resolveReady,
+            });
+            return { finished, ready };
           },
   };
   const window = {
@@ -104,6 +123,9 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
     },
     matchMedia() {
       return { matches: options.reducedMotion ?? false };
+    },
+    requestAnimationFrame(callback: Listener) {
+      animationFrameCallbacks.push(callback);
     },
   };
 
@@ -121,6 +143,7 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
     documentListeners,
     input,
     inputListeners,
+    pendingTransitions,
     root,
     storedValues,
     styleValues,
@@ -128,9 +151,17 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
     get transitionCalls() {
       return transitionCalls;
     },
-    runTransitionUpdate() {
-      transitionUpdate?.();
-      transitionUpdate = undefined;
+    flushAnimationFrames() {
+      animationFrameCallbacks.splice(0).forEach((callback) => callback());
+    },
+    resolveTransitionFinished(index = 0) {
+      pendingTransitions[index]?.resolveFinished();
+    },
+    resolveTransitionReady(index = 0) {
+      pendingTransitions[index]?.resolveReady();
+    },
+    runTransitionUpdate(index = 0) {
+      pendingTransitions[index]?.update();
     },
   };
 }
@@ -162,8 +193,10 @@ test("persists a theme change inside a circular view transition", async () => {
 
   expect(scenario.transitionCalls).toBe(1);
   expect(scenario.root.dataset.theme).toBe("dark");
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
   expect(scenario.storedValues.get("edzon-portfolio-theme")).toBeUndefined();
   scenario.runTransitionUpdate();
+  scenario.resolveTransitionReady();
   await Promise.resolve();
 
   expect(scenario.root.dataset.theme).toBe("light");
@@ -186,6 +219,54 @@ test("persists a theme change inside a circular view transition", async () => {
       },
     },
   ]);
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+  scenario.resolveTransitionFinished();
+  await Promise.resolve();
+
+  expect(scenario.root.dataset.themeTransitioning).toBeUndefined();
+});
+
+test("ignores stale callbacks and cleanup after rapid theme requests", async () => {
+  const script = await readThemeScript();
+  expect(script).not.toBe("");
+  const scenario = runThemeScript(script);
+  scenario.documentListeners.get("DOMContentLoaded")?.();
+
+  scenario.input.checked = true;
+  scenario.inputListeners.get("change")?.();
+  scenario.input.checked = false;
+  scenario.inputListeners.get("change")?.();
+
+  expect(scenario.transitionCalls).toBe(2);
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+  scenario.runTransitionUpdate(1);
+  scenario.runTransitionUpdate(0);
+  scenario.resolveTransitionReady(0);
+  await Promise.resolve();
+
+  expect(scenario.root.dataset.theme).toBe("dark");
+  expect(scenario.themeColor.content).toBe("#0b0b0e");
+  expect(scenario.storedValues.get("edzon-portfolio-theme")).toBe("dark");
+  expect(scenario.input.checked).toBe(false);
+  expect(scenario.animations).toHaveLength(0);
+
+  scenario.resolveTransitionFinished(0);
+  await Promise.resolve();
+  expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+  scenario.resolveTransitionReady(1);
+  await Promise.resolve();
+  expect(scenario.animations).toHaveLength(1);
+  scenario.resolveTransitionFinished(1);
+  await Promise.resolve();
+
+  expect(scenario.root.dataset.theme).toBe("dark");
+  expect(scenario.themeColor.content).toBe("#0b0b0e");
+  expect(scenario.storedValues.get("edzon-portfolio-theme")).toBe("dark");
+  expect(scenario.input.checked).toBe(false);
+  expect(scenario.root.dataset.themeTransitioning).toBeUndefined();
 });
 
 test("applies changes instantly when transitions are reduced or unsupported", async () => {
@@ -205,5 +286,10 @@ test("applies changes instantly when transitions are reduced or unsupported", as
     expect(scenario.storedValues.get("edzon-portfolio-theme")).toBe("light");
     expect(scenario.transitionCalls).toBe(0);
     expect(scenario.animations).toHaveLength(0);
+    expect(scenario.root.dataset.themeTransitioning).toBe("");
+
+    scenario.flushAnimationFrames();
+
+    expect(scenario.root.dataset.themeTransitioning).toBeUndefined();
   }
 });

@@ -50,6 +50,7 @@ const canonical = new URL(Astro.url.pathname, site);
 
         const initialTheme = readStoredTheme();
         applyTheme(initialTheme);
+        let themeRevision = 0;
 
         window.addEventListener("DOMContentLoaded", () => {
           const toggle = document.querySelector("#theme-toggle");
@@ -57,7 +58,9 @@ const canonical = new URL(Astro.url.pathname, site);
 
           toggle.checked = initialTheme === "light";
           toggle.addEventListener("change", () => {
+            const revision = ++themeRevision;
             const nextTheme = toggle.checked ? "light" : "dark";
+            root.dataset.themeTransitioning = "";
             const visibleControl =
               document.querySelector('label[for="theme-toggle"]') ?? toggle;
             const rect = visibleControl.getBoundingClientRect();
@@ -73,11 +76,17 @@ const canonical = new URL(Astro.url.pathname, site);
             root.style.setProperty("--theme-radius", `${radius}px`);
 
             const updateTheme = () => {
+              if (revision !== themeRevision) return;
               applyTheme(nextTheme);
               try {
                 localStorage.setItem(storageKey, nextTheme);
               } catch {
                 // Theme switching still works when storage is unavailable.
+              }
+            };
+            const clearTransitionGuard = () => {
+              if (revision === themeRevision) {
+                delete root.dataset.themeTransitioning;
               }
             };
 
@@ -86,12 +95,14 @@ const canonical = new URL(Astro.url.pathname, site);
               typeof document.startViewTransition !== "function"
             ) {
               updateTheme();
+              window.requestAnimationFrame(clearTransitionGuard);
               return;
             }
 
             const transition = document.startViewTransition(updateTheme);
             transition.ready
               .then(() => {
+                if (revision !== themeRevision) return;
                 root.animate(
                   {
                     clipPath: [
@@ -107,6 +118,10 @@ const canonical = new URL(Astro.url.pathname, site);
                 );
               })
               .catch(() => {});
+            transition.finished.then(
+              clearTransitionGuard,
+              clearTransitionGuard,
+            );
           });
         });
       })();
