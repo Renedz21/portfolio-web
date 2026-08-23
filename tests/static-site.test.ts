@@ -33,3 +33,22 @@ test("publishes crawler discovery files", async () => {
   expect(sitemapIndex).toContain("sitemap-0.xml");
   expect(sitemap).toContain("https://edzon-dev.vercel.app/");
 });
+
+test("renders the complete personal identity and contact paths", async () => {
+  const html = await readOutput("dist/index.html");
+
+  expect(html.match(/<h1\b/g)).toHaveLength(1);
+  expect(html).toContain("Edzon");
+  expect(html).toContain("Perez");
+  expect(html).toContain("Fullstack Engineer");
+  expect(html).toContain(
+    "Desarrollo productos digitales que resuelven problemas reales con precisión técnica y simplicidad.",
+  );
+  expect(html).toContain("Disponible para nuevos proyectos");
+  expect(html).toContain('href="mailto:edzonperez.castillo@gmail.com"');
+  expect(html).toContain('href="https://github.com/Renedz21"');
+  expect(html).toContain(
+    'href="https://www.linkedin.com/in/brad-edzon-perez-castillo-5342b1205/"',
+  );
+  expect(html).toContain('href="#contenido">Saltar al contenido</a>');
+});

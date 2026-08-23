@@ -1,4 +1,5 @@
 ---
+import PersonalIntro from "@/components/PersonalIntro.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 const title = "Edzon Perez — Fullstack Engineer";
@@ -7,5 +8,8 @@ const description =
 ---
 
 <BaseLayout title={title} description={description}>
-  <main id="contenido"></main>
+  <main id="contenido" class="site-shell">
+    <PersonalIntro />
+    <div class="projects-placeholder" aria-label="Proyectos seleccionados"></div>
+  </main>
 </BaseLayout>

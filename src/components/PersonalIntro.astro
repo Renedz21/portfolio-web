@@ -1,0 +1,75 @@
+---
+const skills = [
+  "React / Next.js",
+  "TypeScript",
+  "Node.js / NestJS",
+  "PostgreSQL / Supabase",
+  "Tailwind CSS",
+];
+
+const socials = [
+  {
+    label: "GitHub",
+    url: "https://github.com/Renedz21",
+  },
+  {
+    label: "LinkedIn",
+    url: "https://www.linkedin.com/in/brad-edzon-perez-castillo-5342b1205/",
+  },
+];
+---
+
+<header class="personal-panel">
+  <div class="personal-topline">
+    <a class="monogram" href="#contenido" aria-label="Ir al inicio">EP.</a>
+    <p class="availability">
+      <span class="availability-dot" aria-hidden="true"></span>
+      Disponible para nuevos proyectos
+    </p>
+  </div>
+
+  <div class="personal-copy">
+    <p class="eyebrow">Fullstack Engineer · Lima, Perú</p>
+    <h1><span>Edzon</span><span>Perez</span></h1>
+    <p class="statement">
+      Desarrollo productos digitales que resuelven problemas reales con
+      precisión técnica y simplicidad.
+    </p>
+    <p class="about">
+      Soy Edzon, desarrollador fullstack. Construyo productos claros y
+      agradables de usar, con experiencias fluidas que resuelven problemas sin
+      complicar la vida.
+    </p>
+  </div>
+
+  <div class="personal-meta">
+    <div class="skills-block">
+      <p class="meta-label">Tecnologías principales</p>
+      <ul class="skills-list" aria-label="Tecnologías principales">
+        {skills.map((skill) => <li>{skill}</li>)}
+      </ul>
+    </div>
+
+    <div class="contact-links">
+      <a class="primary-cta" href="mailto:edzonperez.castillo@gmail.com">
+        <span>Hablemos</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+      <nav class="social-links" aria-label="Redes profesionales">
+        {
+          socials.map((social) => (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label + " (abre en una pestaña nueva)"}
+            >
+              <span>{social.label}</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</header>
