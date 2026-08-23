@@ -11,10 +11,10 @@ export interface Project {
   image?: ImageMetadata;
 }
 
-export const projects = [
+export const projects: readonly Project[] = [
   {
     id: 1,
-    title: "KONTI",
+    title: "Konti",
     category: "Finanzas personales",
     description:
       "App móvil para gestionar boletas electrónicas mediante ingreso manual u OCR, diseñada para facilitar la declaración anual ante SUNAT.",
@@ -80,4 +80,4 @@ export const projects = [
     year: "2026",
     url: "https://quipu-finance.app/",
   },
-] as const satisfies readonly Project[];
+];

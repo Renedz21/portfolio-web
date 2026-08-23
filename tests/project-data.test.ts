@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { projects } from "../src/data/projects";
 
-const expectedProjects = [
-  ["KONTI", "https://www.konti.dev/"],
+const expectedProjects: Array<[string, string]> = [
+  ["Konti", "https://www.konti.dev/"],
   ["¿QuéComo?", "https://que-como.vercel.app/"],
   ["Inkyra", "https://inkyra.app/"],
   ["Quipu", "https://quipu-finance.app/"],
