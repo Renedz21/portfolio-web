@@ -22,6 +22,7 @@
   --text: #f2f2f3;
   --muted: #a1a1aa;
   --accent: #4d7cff;
+  --accent-foreground: #0b0b0e;
   --placeholder: #d4d4d6;
   --placeholder-text: #303036;
   --secondary-text: #c5c5ca;
@@ -45,6 +46,7 @@
   --text: #171719;
   --muted: #68686f;
   --accent: #315cc6;
+  --accent-foreground: #ffffff;
   --placeholder: #dedee1;
   --placeholder-text: #4c4c52;
   --secondary-text: #48484f;
@@ -424,7 +426,7 @@ h1 span:last-child {
 .primary-cta:focus-visible {
   border-color: var(--accent);
   background: var(--accent);
-  color: #ffffff;
+  color: var(--accent-foreground);
 }
 
 .social-links {

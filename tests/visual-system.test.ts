@@ -84,19 +84,29 @@ test("defines the CSS-only light theme and segmented switch states", async () =>
   );
 });
 
-test("keeps light-theme accent text and controls at WCAG AA contrast", async () => {
+test("keeps accent text and controls at WCAG AA contrast in both themes", async () => {
   const css = await Bun.file(stylesheetUrl).text();
+  const darkTheme = css.match(/:root \{[\s\S]*?\n}/)?.[0] ?? "";
   const lightTheme =
     css.match(/:root\[data-theme="light"\],[\s\S]*?\n}/)?.[0] ?? "";
-  const accent = readToken(lightTheme, "--accent");
+  const darkAccent = readToken(darkTheme, "--accent");
+  const lightAccent = readToken(lightTheme, "--accent");
 
   expect(
-    contrastRatio(accent, readToken(lightTheme, "--surface")),
+    contrastRatio(darkAccent, readToken(darkTheme, "--surface")),
   ).toBeGreaterThanOrEqual(4.5);
   expect(
-    contrastRatio(accent, readToken(lightTheme, "--panel")),
+    contrastRatio(darkAccent, readToken(darkTheme, "--accent-foreground")),
   ).toBeGreaterThanOrEqual(4.5);
-  expect(contrastRatio(accent, "#ffffff")).toBeGreaterThanOrEqual(4.5);
+  expect(
+    contrastRatio(lightAccent, readToken(lightTheme, "--surface")),
+  ).toBeGreaterThanOrEqual(4.5);
+  expect(
+    contrastRatio(lightAccent, readToken(lightTheme, "--panel")),
+  ).toBeGreaterThanOrEqual(4.5);
+  expect(
+    contrastRatio(lightAccent, readToken(lightTheme, "--accent-foreground")),
+  ).toBeGreaterThanOrEqual(4.5);
 });
 
 test("defines restrained interaction and circular reveal rules", async () => {
