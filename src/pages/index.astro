@@ -1,0 +1,18 @@
+---
+import ContactFooter from "@/components/ContactFooter.astro";
+import PersonalIntro from "@/components/PersonalIntro.astro";
+import ProjectList from "@/components/ProjectList.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const title = "Edzon Perez — Fullstack Engineer";
+const description =
+  "Portfolio de Edzon Perez, Fullstack Engineer que crea productos digitales claros, útiles y técnicamente sólidos.";
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="contenido" class="site-shell">
+    <PersonalIntro />
+    <ProjectList />
+  </main>
+  <ContactFooter />
+</BaseLayout>
