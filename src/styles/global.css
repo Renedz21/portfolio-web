@@ -73,22 +73,24 @@ html {
   clip-path: circle(var(--theme-radius) at var(--theme-x) var(--theme-y));
 }
 
-:root[data-theme-transitioning] :where(
-  .theme-toggle-label,
-  .theme-option,
-  .primary-cta,
-  .social-links a,
-  .project-entry,
-  .project-arrow
-),
-:root:not([data-theme-enhanced]) :where(
-  .theme-toggle-label,
-  .theme-option,
-  .primary-cta,
-  .social-links a,
-  .project-entry,
-  .project-arrow
-) {
+:root[data-theme-transitioning]
+  :where(
+    .theme-toggle-label,
+    .theme-option,
+    .primary-cta,
+    .social-links a,
+    .project-entry,
+    .project-arrow
+  ),
+:root:not([data-theme-enhanced])
+  :where(
+    .theme-toggle-label,
+    .theme-option,
+    .primary-cta,
+    .social-links a,
+    .project-entry,
+    .project-arrow
+  ) {
   transition-duration: 0ms;
 }
 
@@ -714,12 +716,15 @@ a:focus-visible {
   *,
   *::before,
   *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: the accessibility override must win the cascade */
     scroll-behavior: auto !important;
+    /* biome-ignore lint/complexity/noImportantStyles: the accessibility override must win the cascade */
     transition-duration: 0.01ms !important;
   }
 
   ::view-transition-old(root),
   ::view-transition-new(root) {
+    /* biome-ignore lint/complexity/noImportantStyles: the accessibility override must win the cascade */
     animation: none !important;
   }
 }

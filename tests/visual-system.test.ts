@@ -59,9 +59,9 @@ test("defines restrained interaction and circular reveal rules", async () => {
   expect(css).not.toContain("linear-gradient");
   expect(css).not.toContain("radial-gradient");
   expect(css).toContain("animation: none !important;");
-  expect(css).toContain(":root[data-theme-transitioning] :where(");
+  expect(css).toContain(":root[data-theme-transitioning]\n  :where(");
   expect(css).toContain("  .project-entry,");
-  expect(css).toContain(":root:not([data-theme-enhanced]) :where(");
+  expect(css).toContain(":root:not([data-theme-enhanced])\n  :where(");
   expect(css).toContain("transition-duration: 0ms;");
 });
 

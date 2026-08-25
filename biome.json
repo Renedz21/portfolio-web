@@ -9,13 +9,20 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
+      "!**/*.astro",
       "!node_modules",
       "!.astro",
-      "!.next",
+      "!.agents",
+      "!.superpowers",
       "!dist",
       "!build",
       "!docs/superpowers"
     ]
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   },
   "formatter": {
     "enabled": true,

@@ -112,7 +112,7 @@ test("renders published projects as safe external links", async () => {
   expect(html.match(/class="project-arrow"/g)).toHaveLength(4);
 
   for (const url of expectedUrls) {
-    expect(html).toContain('href="' + url + '"');
+    expect(html).toContain(`href="${url}"`);
   }
 
   for (const link of projectLinks) {
@@ -127,7 +127,8 @@ test("renders projects in development as non-interactive previews", async () => 
   const articles =
     html.match(/<article class="project-card"[\s\S]*?<\/article>/g) ?? [];
   const developmentArticles = articles.filter(
-    (article) => article.includes(">Aulara</h2>") || article.includes(">Naya</h2>"),
+    (article) =>
+      article.includes(">Aulara</h2>") || article.includes(">Naya</h2>"),
   );
 
   expect(developmentArticles).toHaveLength(2);

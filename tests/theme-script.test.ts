@@ -152,7 +152,9 @@ function runThemeScript(script: string, options: ScenarioOptions = {}) {
       return transitionCalls;
     },
     flushAnimationFrames() {
-      animationFrameCallbacks.splice(0).forEach((callback) => callback());
+      animationFrameCallbacks.splice(0).forEach((callback) => {
+        callback();
+      });
     },
     resolveTransitionFinished(index = 0) {
       pendingTransitions[index]?.resolveFinished();

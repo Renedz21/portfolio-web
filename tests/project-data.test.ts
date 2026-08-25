@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { projects, type Project } from "../src/data/projects";
+import { type Project, projects } from "../src/data/projects";
 
 const expectedTitles = [
   "Konti",
