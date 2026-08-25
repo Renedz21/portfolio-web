@@ -7,11 +7,11 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "test": "bun test",
+    "test": "astro build && bun test",
     "lint": "biome check .",
     "format": "biome format --write .",
     "check": "astro check && biome check .",
-    "validate": "bun run check && bun run build && bun run test"
+    "validate": "bun run check && bun run test"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.3",

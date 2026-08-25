@@ -63,7 +63,8 @@ describe("Astro migration cleanup", () => {
       dev: "astro dev",
       build: "astro check && astro build",
       preview: "astro preview",
-      validate: "bun run check && bun run build && bun run test",
+      test: "astro build && bun test",
+      validate: "bun run check && bun run test",
     });
     expect(Object.values(packageJson.scripts).join("\n")).not.toMatch(
       /(?:^|\s)next(?:\s|$)/i,

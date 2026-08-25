@@ -23,7 +23,7 @@ Astro mostrará en la terminal la URL local del proyecto.
 bun run dev       # Inicia Astro en modo desarrollo
 bun run build     # Comprueba tipos y genera el sitio estático
 bun run preview   # Previsualiza el resultado de producción
-bun run test      # Ejecuta las pruebas automatizadas
+bun run test      # Genera el sitio y ejecuta las pruebas automatizadas
 bun run check     # Comprueba Astro y el formato/lint del proyecto
 bun run validate  # Ejecuta todas las verificaciones del proyecto
 ```
@@ -43,4 +43,4 @@ bun run validate
 - `public/`: recursos publicados sin transformación.
 - `tests/`: contratos de datos, salida estática y comportamiento del tema.
 
-El resultado de producción se genera en `dist/` y puede desplegarse en cualquier servicio de alojamiento estático.
+El resultado de producción se genera en `dist/` y puede desplegarse en cualquier servicio de alojamiento estático. Vercel detecta Astro automáticamente: no se necesita un adaptador ni funciones de servidor.

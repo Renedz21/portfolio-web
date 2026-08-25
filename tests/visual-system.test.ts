@@ -2,6 +2,44 @@ import { expect, test } from "bun:test";
 
 const stylesheetUrl = new URL("../src/styles/global.css", import.meta.url);
 
+function relativeLuminance(hex: string): number {
+  const channels = hex
+    .slice(1)
+    .match(/.{2}/g)
+    ?.map((channel) => Number.parseInt(channel, 16) / 255);
+
+  if (!channels || channels.length !== 3) {
+    throw new Error(`Invalid hex color: ${hex}`);
+  }
+
+  const [red, green, blue] = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
+  );
+
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+function contrastRatio(first: string, second: string): number {
+  const firstLuminance = relativeLuminance(first);
+  const secondLuminance = relativeLuminance(second);
+  const lighter = Math.max(firstLuminance, secondLuminance);
+  const darker = Math.min(firstLuminance, secondLuminance);
+
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function readToken(block: string, token: string): string {
+  const value = block.match(
+    new RegExp(`${token}:\\s*(#[0-9a-f]{6});`, "i"),
+  )?.[1];
+
+  if (!value) {
+    throw new Error(`Missing ${token} token`);
+  }
+
+  return value;
+}
+
 test("defines the approved dark-first visual tokens", async () => {
   const css = await Bun.file(stylesheetUrl).text();
 
@@ -38,10 +76,27 @@ test("defines the CSS-only light theme and segmented switch states", async () =>
   expect(css).toContain("--text: #171719;");
   expect(css).toContain("--muted: #68686f;");
   expect(css).toContain("--placeholder: #dedee1;");
+  expect(css).toContain(':root[data-theme="light"] .theme-option-sun');
+  expect(css).toContain(':root[data-theme="light"] .theme-option-moon');
   expect(css).toContain(".theme-toggle:focus-visible + .theme-toggle-label");
   expect(css).toContain(
     ".theme-toggle:checked + .theme-toggle-label .theme-option-sun",
   );
+});
+
+test("keeps light-theme accent text and controls at WCAG AA contrast", async () => {
+  const css = await Bun.file(stylesheetUrl).text();
+  const lightTheme =
+    css.match(/:root\[data-theme="light"\],[\s\S]*?\n}/)?.[0] ?? "";
+  const accent = readToken(lightTheme, "--accent");
+
+  expect(
+    contrastRatio(accent, readToken(lightTheme, "--surface")),
+  ).toBeGreaterThanOrEqual(4.5);
+  expect(
+    contrastRatio(accent, readToken(lightTheme, "--panel")),
+  ).toBeGreaterThanOrEqual(4.5);
+  expect(contrastRatio(accent, "#ffffff")).toBeGreaterThanOrEqual(4.5);
 });
 
 test("defines restrained interaction and circular reveal rules", async () => {

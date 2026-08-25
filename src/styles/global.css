@@ -44,7 +44,7 @@
   --line: #d8d4cc;
   --text: #171719;
   --muted: #68686f;
-  --accent: #4d7cff;
+  --accent: #315cc6;
   --placeholder: #dedee1;
   --placeholder-text: #4c4c52;
   --secondary-text: #48484f;
@@ -293,6 +293,7 @@ ul {
   fill: currentColor;
 }
 
+:root[data-theme="light"] .theme-option-sun,
 .theme-toggle:checked + .theme-toggle-label .theme-option-sun {
   background: var(--toggle-active);
   color: var(--text);
@@ -301,6 +302,7 @@ ul {
     0 1px 4px var(--toggle-shadow);
 }
 
+:root[data-theme="light"] .theme-option-moon,
 .theme-toggle:checked + .theme-toggle-label .theme-option-moon {
   background: transparent;
   color: var(--muted);
